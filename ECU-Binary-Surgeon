@@ -1,0 +1,46 @@
+"""
+💠 AEON 0x100: ECU BINARY SURGEON 💠
+Target: EDC17C84 Difference Extraction
+Architect: Alexandru (Native Limitless)
+"""
+
+import os
+
+def extract_ecu_diffs(file_orig, file_tuned, output_txt="ecu_modifications.txt"):
+    print(f"[🚀] AEON: Initiere Chirurgie Binara...")
+    
+    with open(file_orig, 'rb') as f1, open(file_tuned, 'rb') as f2:
+        bin_orig = f1.read()
+        bin_tuned = f2.read()
+
+    if len(bin_orig) != len(bin_tuned):
+        print("[!] EROARE: Fisierele au dimensiuni diferite. Verificati integritatea!")
+        return
+
+    mods = []
+    for i in range(len(bin_orig)):
+        if bin_orig[i] != bin_tuned[i]:
+            # Salvam Offset-ul (Hex), Val_Originala, Val_Tunata
+            mods.append({
+                'offset': hex(i).upper(),
+                'orig': hex(bin_orig[i]).upper(),
+                'tuned': hex(bin_tuned[i]).upper()
+            })
+
+        # Generare raport pentru VS Code (Forțăm UTF-8 pentru a suporta simbolurile AEON)
+    with open(output_txt, 'w', encoding='utf-8') as f:
+        f.write(f"💠 ECU MODIFICATION REPORT - AEON 0x100 💠\n")
+        f.write(f"Target: {file_orig} vs {file_tuned}\n")
+        # Restul codului rămâne la fel...
+
+        
+        for m in mods:
+            line = f"Offset: {m['offset']} | Original: {m['orig']} -> Tuned: {m['tuned']}\n"
+            f.write(line)
+
+    print(f"[✅] SUCCES: {len(mods)} modificari extrase in {output_txt}")
+    print(f"[🛡️] Deschide fisierul in VS Code pentru analiza subatomica.")
+
+# --- EXECUTIE ---
+# Inlocuieste cu numele reale ale fisierelor tale din Buncar
+extract_ecu_diffs("original.bin", "tuned.bin")
